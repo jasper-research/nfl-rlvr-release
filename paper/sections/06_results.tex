@@ -1,0 +1,81 @@
+% Section 6 -- Results (merged Results + Analysis). Flowing moderate sentences; long sentences split.
+% Numbers from results.json. Floats: T1, F3, F4, T4.
+\section{Results}
+\label{sec:results}
+
+Reinforcement learning against the conditional-rate reward calibrates the forecaster to the level of
+the betting market. On the held-out 2024 season the direct model reaches an expected calibration error of
+$0.029$, against the market's $0.027$ and the untrained model's $0.057$. Its maximum-bin error, $0.060$,
+is below the market's $0.082$, and its reliability curve lies on the diagonal where the untrained model's
+does not (\cref{fig:reliability}). Its Brier score of $0.144$ improves on the untrained $0.206$ and trails
+the market's $0.136$ (\cref{tab:main}). The masked chain-of-thought model is as well calibrated, at an
+expected calibration error of $0.030$, with a slightly higher Brier score of $0.152$.
+
+\begin{table*}[t]
+\centering
+\input{tables/T1_main.tex}
+\caption{Held-out 2024 ($n=5185$). Brier with $95\%$ bootstrap interval, expected and maximum
+calibration error, accuracy, and Murphy resolution. The trained models reach the teacher and
+frontier-model tier, the direct model matches the market on calibration, and both trail the market on
+Brier through resolution rather than reliability.}
+\label{tab:main}
+\end{table*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{F3_reliability.pdf}
+\caption{Reliability on held-out 2024; points on the diagonal are perfectly calibrated and their area is
+proportional to the plays in the bin. The trained forecasters follow the diagonal as closely as the
+market, while the untrained chain-of-thought model is overconfident.}
+\label{fig:reliability}
+\end{figure*}
+
+The direct model matches the market on calibration but trails it on Brier by $0.008$. By the Murphy
+decomposition this gap is resolution, not reliability: the model is as well calibrated as the market but
+less sharp, $0.106$ against $0.115$. It assigns the right probability to the states it can describe, but
+separates fewer of them. The missing sharpness comes from information the prompt does not contain, and
+no static forecaster does better.
+
+The frontier model and the teacher reach the same Brier score as the direct model, $0.144$ and $0.143$
+against $0.144$, and a paired bootstrap separates none of the three. All three trail the market by
+$0.008$, significant in each case (\cref{fig:triangulation}), and the direct model is better calibrated
+than the frontier model, $0.029$ against $0.043$. No richer static model improves on the coarse rate. The
+tuned nflverse model and a gradient-boosted model on the full feature set score $0.156$ and $0.158$
+against $0.143$ (\cref{tab:ceiling}), since the extra features add play-level noise without game-level
+signal. \citet{brill2024} reach the same bound analytically, showing that the correlated structure of
+play-by-play data limits the accuracy of any such model. The market's $0.008$ edge is therefore live
+in-game information that no static input contains.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{F4_triangulation.pdf}
+\caption{Held-out 2024 Brier with $95\%$ bootstrap intervals. A label-free 7B model trained by direct
+prediction, a frontier model prompted zero-shot, and the empirical-rate teacher converge near $0.143$
+and trail the market by the same significant margin, placing the residual gap in the available
+information rather than in model capacity.}
+\label{fig:triangulation}
+\end{figure*}
+
+\begin{table}[t]
+\centering
+\input{tables/T4_ceiling.tex}
+\caption{Held-out 2024 Brier and ECE for static-feature forecasters. Two models with more features than
+the coarse buckets are worse on Brier; the coarse empirical rate is the best static estimator, and the
+direct model reaches its level.}
+\label{tab:ceiling}
+\end{table}
+
+On the test season the direct model is better calibrated than the teacher it was trained on. Its
+expected calibration error is $0.029$ against the teacher's $0.044$, and its maximum-bin error $0.060$
+against $0.099$, at the same Brier score. The policy smooths the bucketed target into a calibrated
+function of the state.
+
+The decalibration of full-completion chain-of-thought training (\cref{sec:decoupling}) does not come
+from misreading the game state. A blinded judge scored five state-reading errors (possession, score,
+spread, clock, and pregame anchoring) and found each in one to ten percent of completions across the
+base, full-completion, and masked models, so all of them read the game correctly. The full-completion
+models fail instead at the step from those facts to a number. They write pseudo-quantitative arguments whose probabilities exceed one and
+report a figure their own text does not support (\cref{fig:reasoning-examples}). The error is an
+inconsistency between the reasoning and the answer (\cref{fig:faithfulness}), not a factual mistake.
+Masking the gradient leaves the reading of the state untouched and keeps the number consistent with it,
+which restores calibration.

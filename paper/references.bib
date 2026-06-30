@@ -1,0 +1,324 @@
+% References. EVERY entry verified by reading the source (arXiv/venue/journal page fetched;
+% title, authors, year, id confirmed). Provenance: lead-verified core + the six-angle verified
+% survey (notes/related-work-verified.md). Do not add an entry without that verification.
+% A few journal pages returned HTTP 403 to the fetcher; their volume/pages were cross-confirmed
+% via DOI/ADS/JSTOR (noted in the survey file). See memory citation-rigor.
+
+% ===== Proper scoring rules & calibration methodology =====
+@article{brier1950,
+  author  = {Brier, Glenn W.},
+  title   = {Verification of Forecasts Expressed in Terms of Probability},
+  journal = {Monthly Weather Review},
+  volume  = {78}, number = {1}, pages = {1--3}, year = {1950}
+}
+
+@article{murphy1973,
+  author  = {Murphy, Allan H.},
+  title   = {A New Vector Partition of the Probability Score},
+  journal = {Journal of Applied Meteorology},
+  volume  = {12}, number = {4}, pages = {595--600}, year = {1973}
+}
+
+@article{gneiting2007,
+  author  = {Gneiting, Tilmann and Raftery, Adrian E.},
+  title   = {Strictly Proper Scoring Rules, Prediction, and Estimation},
+  journal = {Journal of the American Statistical Association},
+  volume  = {102}, number = {477}, pages = {359--378}, year = {2007}
+}
+
+@article{gneiting2007sharpness,
+  author  = {Gneiting, Tilmann and Balabdaoui, Fadoua and Raftery, Adrian E.},
+  title   = {Probabilistic Forecasts, Calibration and Sharpness},
+  journal = {Journal of the Royal Statistical Society: Series B},
+  volume  = {69}, number = {2}, pages = {243--268}, year = {2007}
+}
+
+@article{efron_morris1975,
+  author  = {Efron, Bradley and Morris, Carl},
+  title   = {Data Analysis Using {Stein's} Estimator and Its Generalizations},
+  journal = {Journal of the American Statistical Association},
+  volume  = {70}, number = {350}, pages = {311--319}, year = {1975}
+}
+
+@article{efron1979,
+  author  = {Efron, Bradley},
+  title   = {Bootstrap Methods: Another Look at the Jackknife},
+  journal = {The Annals of Statistics},
+  volume  = {7}, number = {1}, pages = {1--26}, year = {1979}
+}
+
+@inproceedings{guo2017,
+  author    = {Guo, Chuan and Pleiss, Geoff and Sun, Yu and Weinberger, Kilian Q.},
+  title     = {On Calibration of Modern Neural Networks},
+  booktitle = {Proceedings of the 34th International Conference on Machine Learning (ICML)},
+  year      = {2017}, note = {arXiv:1706.04599}
+}
+
+@article{brocker2007,
+  author  = {Br{\"o}cker, Jochen and Smith, Leonard A.},
+  title   = {Increasing the Reliability of Reliability Diagrams},
+  journal = {Weather and Forecasting},
+  volume  = {22}, number = {3}, pages = {651--661}, year = {2007}
+}
+
+@article{dimitriadis2021,
+  author  = {Dimitriadis, Timo and Gneiting, Tilmann and Jordan, Alexander I.},
+  title   = {Stable Reliability Diagrams for Probabilistic Classifiers},
+  journal = {Proceedings of the National Academy of Sciences},
+  volume  = {118}, number = {8}, pages = {e2016191118}, year = {2021}
+}
+
+@inproceedings{kumar2019,
+  author    = {Kumar, Ananya and Liang, Percy and Ma, Tengyu},
+  title     = {Verified Uncertainty Calibration},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2019}, note = {arXiv:1909.10155}
+}
+
+@inproceedings{gruber2022,
+  author    = {Gruber, Sebastian G. and Buettner, Florian},
+  title     = {Better Uncertainty Calibration via Proper Scores for Classification and Beyond},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2022}, note = {arXiv:2203.07835}
+}
+
+% ===== RLVR / RL post-training and calibration (closest comparators) =====
+@article{uncalibrated_reasoning,
+  author  = {Bereket, Michael and Leskovec, Jure},
+  title   = {Uncalibrated Reasoning: {GRPO} Induces Overconfidence for Stochastic Outcomes},
+  journal = {arXiv preprint arXiv:2508.11800}, year = {2025}
+}
+
+@article{rlcr,
+  author  = {Damani, Mehul and Puri, Isha and Slocum, Stewart and Shenfeld, Idan and Choshen, Leshem
+             and Kim, Yoon and Andreas, Jacob},
+  title   = {Beyond Binary Rewards: Training {LMs} to Reason About Their Uncertainty},
+  journal = {arXiv preprint arXiv:2507.16806}, year = {2025}
+}
+
+@inproceedings{dcpo,
+  author    = {Ma, Zhengzhao and Wen, Xueru and Cao, Boxi and Lu, Yaojie and Lin, Hongyu
+               and Yang, Jinglin and He, Min and Han, Xianpei and Sun, Le},
+  title     = {Decoupling Reasoning and Confidence: Resurrecting Calibration in Reinforcement
+               Learning from Verifiable Rewards},
+  booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML)},
+  year      = {2026}, note = {arXiv:2603.09117}
+}
+
+@article{rewarding_doubt,
+  author  = {Bani-Harouni, David and Pellegrini, Chantal and Stangel, Paul and {\"O}zsoy, Ege
+             and Zaripova, Kamilia and Navab, Nassir and Keicher, Matthias},
+  title   = {Rewarding Doubt: A Reinforcement Learning Approach to Calibrated Confidence
+             Expression of Large Language Models},
+  journal = {arXiv preprint arXiv:2503.02623}, year = {2025}
+}
+
+@inproceedings{band2024,
+  author    = {Band, Neil and Li, Xuechen and Ma, Tengyu and Hashimoto, Tatsunori},
+  title     = {Linguistic Calibration of Long-Form Generations},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  year      = {2024}, note = {arXiv:2404.00474}
+}
+
+@article{leng2024,
+  author  = {Leng, Jixuan and Huang, Chengsong and Zhu, Banghua and Huang, Jiaxin},
+  title   = {Taming Overconfidence in {LLMs}: Reward Calibration in {RLHF}},
+  journal = {arXiv preprint arXiv:2410.09724}, year = {2024}
+}
+
+% ===== GRPO / RLVR algorithm lineage (our method's context) =====
+@article{grpo,
+  author  = {Shao, Zhihong and Wang, Peiyi and Zhu, Qihao and Xu, Runxin and Song, Junxiao
+             and Bi, Xiao and Zhang, Haowei and Zhang, Mingchuan and Li, Y. K. and Wu, Y. and Guo, Daya},
+  title   = {{DeepSeekMath}: Pushing the Limits of Mathematical Reasoning in Open Language Models},
+  journal = {arXiv preprint arXiv:2402.03300}, year = {2024}
+}
+
+@article{deepseek_r1,
+  author  = {Guo, Daya and Yang, Dejian and Zhang, Haowei and Song, Junxiao and others},
+  title   = {{DeepSeek-R1} Incentivizes Reasoning in {LLMs} Through Reinforcement Learning},
+  journal = {Nature},
+  volume  = {645}, number = {8081}, pages = {633--638}, year = {2025},
+  note    = {arXiv:2501.12948}
+}
+
+@article{dapo,
+  author  = {Yu, Qiying and Zhang, Zheng and Zhu, Ruofei and Yuan, Yufeng and Zuo, Xiaochen
+             and Yue, Yu and others},
+  title   = {{DAPO}: An Open-Source {LLM} Reinforcement Learning System at Scale},
+  journal = {arXiv preprint arXiv:2503.14476}, year = {2025}
+}
+
+@article{drgrpo,
+  author  = {Liu, Zichen and Chen, Changyu and Li, Wenjun and Qi, Penghui and Pang, Tianyu
+             and Du, Chao and Lee, Wee Sun and Lin, Min},
+  title   = {Understanding {R1}-Zero-Like Training: A Critical Perspective},
+  journal = {arXiv preprint arXiv:2503.20783}, year = {2025}
+}
+
+@article{gspo,
+  author  = {Zheng, Chujie and Liu, Shixuan and Li, Mingze and Chen, Xiong-Hui and Yu, Bowen
+             and Gao, Chang and Dang, Kai and Liu, Yuqiong and Men, Rui and Yang, An
+             and Zhou, Jingren and Lin, Junyang},
+  title   = {Group Sequence Policy Optimization},
+  journal = {arXiv preprint arXiv:2507.18071}, year = {2025}
+}
+
+@inproceedings{wang2025entropy,
+  author    = {Wang, Shenzhi and Yu, Le and Gao, Chang and Zheng, Chujie and Liu, Shixuan and Lu, Rui
+               and Dang, Kai and Chen, Xionghui and Yang, Jianxin and Zhang, Zhenru and Liu, Yuqiong
+               and Yang, An and Zhao, Andrew and Yue, Yang and Song, Shiji and Yu, Bowen
+               and Huang, Gao and Lin, Junyang},
+  title     = {Beyond the 80/20 Rule: High-Entropy Minority Tokens Drive Effective Reinforcement
+               Learning for {LLM} Reasoning},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2025}, note = {arXiv:2506.01939}
+}
+
+@inproceedings{rpg2026,
+  author    = {Zhang, Yifan and Liu, Yifeng and Yuan, Huizhuo and Yuan, Yang and Gu, Quanquan
+               and Yao, Andrew Chi-Chih},
+  title     = {On the Design of {KL}-Regularized Policy Gradient Algorithms for {LLM} Reasoning},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2026}, note = {arXiv:2505.17508}
+}
+
+@inproceedings{gpg2026,
+  author    = {Chu, Xiangxiang and Huang, Hailang and Zhang, Xiao and Wei, Fei and Wang, Yong},
+  title     = {{GPG}: A Simple and Strong Reinforcement Learning Baseline for Model Reasoning},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2026}, note = {arXiv:2504.02546}
+}
+
+% ===== LLMs as forecasters (task analog) =====
+@article{turtel2025outcome,
+  author  = {Turtel, Benjamin and Franklin, Danny and Skotheim, Kris and Hewitt, Luke
+             and Schoenegger, Philipp},
+  title   = {Outcome-Based Reinforcement Learning to Predict the Future},
+  journal = {arXiv preprint arXiv:2505.17989}, year = {2025}
+}
+
+@article{turtel2025selftaught,
+  author  = {Turtel, Benjamin and Franklin, Danny and Schoenegger, Philipp},
+  title   = {{LLMs} Can Teach Themselves to Better Predict the Future},
+  journal = {arXiv preprint arXiv:2502.05253}, year = {2025}
+}
+
+@inproceedings{halawi2024,
+  author    = {Halawi, Danny and Zhang, Fred and Yueh-Han, Chen and Steinhardt, Jacob},
+  title     = {Approaching Human-Level Forecasting with Language Models},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2024}, note = {arXiv:2402.18563}
+}
+
+@article{pratt2024,
+  author  = {Pratt, Sarah and Blumberg, Seth and Carolino, Pietro Kreitlon and Morris, Meredith Ringel},
+  title   = {Can Language Models Use Forecasting Strategies?},
+  journal = {arXiv preprint arXiv:2406.04446}, year = {2024}
+}
+
+@article{karger2024forecastbench,
+  author  = {Karger, Ezra and Bastani, Houtan and Yueh-Han, Chen and Jacobs, Zachary and Halawi, Danny
+             and Zhang, Fred and Tetlock, Philip E.},
+  title   = {{ForecastBench}: A Dynamic Benchmark of {AI} Forecasting Capabilities},
+  journal = {arXiv preprint arXiv:2409.19839}, year = {2024}
+}
+
+@article{paleka2025,
+  author  = {Paleka, Daniel and Goel, Shashwat and Geiping, Jonas and Tram{\`e}r, Florian},
+  title   = {Pitfalls in Evaluating Language Model Forecasters},
+  journal = {arXiv preprint arXiv:2506.00723}, year = {2025}
+}
+
+% ===== Sports win-probability & betting-market efficiency (domain) =====
+@article{lock2014,
+  author  = {Lock, Dennis and Nettleton, Dan},
+  title   = {Using Random Forests to Estimate Win Probability Before Each Play of an {NFL} Game},
+  journal = {Journal of Quantitative Analysis in Sports},
+  volume  = {10}, number = {2}, pages = {197--205}, year = {2014}
+}
+
+@article{yurko2018,
+  author  = {Yurko, Ronald and Ventura, Samuel and Horowitz, Maksim},
+  title   = {{nflWAR}: A Reproducible Method for Offensive Player Evaluation in Football},
+  journal = {Journal of Quantitative Analysis in Sports},
+  volume  = {15}, number = {3}, year = {2019}, note = {arXiv:1802.00998}
+}
+
+@Manual{nflfastr,
+  author = {Carl, Sebastian and Baldwin, Ben},
+  title  = {{nflfastR}: Functions to Efficiently Access {NFL} Play by Play Data},
+  year   = {2024},
+  note   = {R package},
+  url    = {https://www.nflfastr.com/}
+}
+
+@article{brill2024,
+  author  = {Brill, Ryan S. and Yurko, Ronald and Wyner, Abraham J.},
+  title   = {Exploring the Difficulty of Estimating Win Probability: A Simulation Study},
+  journal = {Journal of Quantitative Analysis in Sports},
+  year    = {2025}, note = {arXiv:2406.16171}
+}
+
+@article{polson2015,
+  author  = {Polson, Nicholas G. and Stern, Hal S.},
+  title   = {The Implied Volatility of a Sports Game},
+  journal = {Journal of Quantitative Analysis in Sports},
+  volume  = {11}, number = {3}, pages = {145--153}, year = {2015}
+}
+
+@article{levitt2004,
+  author  = {Levitt, Steven D.},
+  title   = {Why Are Gambling Markets Organised So Differently from Financial Markets?},
+  journal = {The Economic Journal},
+  volume  = {114}, number = {495}, pages = {223--246}, year = {2004}
+}
+
+@article{boulier2003,
+  author  = {Boulier, Bryan L. and Stekler, H. O.},
+  title   = {Predicting the Outcomes of National Football League Games},
+  journal = {International Journal of Forecasting},
+  volume  = {19}, number = {2}, pages = {257--270}, year = {2003}
+}
+
+@article{strumbelj2014,
+  author  = {{\v{S}}trumbelj, Erik},
+  title   = {On Determining Probability Forecasts from Betting Odds},
+  journal = {International Journal of Forecasting},
+  volume  = {30}, number = {4}, pages = {934--943}, year = {2014}
+}
+
+@article{franck2010,
+  author  = {Franck, Egon and Verbeek, Erwin and N{\"u}esch, Stephan},
+  title   = {Prediction Accuracy of Different Market Structures: Bookmakers Versus a Betting Exchange},
+  journal = {International Journal of Forecasting},
+  volume  = {26}, number = {3}, pages = {448--459}, year = {2010}
+}
+
+@article{cox2021,
+  author  = {Cox, Justin and Schwartz, Adam L. and Van Ness, Bonnie F. and Van Ness, Robert A.},
+  title   = {The Predictive Power of College Football Spreads: Regular Season Versus Bowl Games},
+  journal = {Journal of Sports Economics},
+  volume  = {22}, number = {3}, pages = {251--273}, year = {2021}
+}
+
+% ===== Newly verified (2026-06-23 lead close-out): calibration baselines & token-masking lineage =====
+@inproceedings{lacie,
+  author    = {Stengel-Eskin, Elias and Hase, Peter and Bansal, Mohit},
+  title     = {{LACIE}: Listener-Aware Finetuning for Confidence Calibration in Large Language Models},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2024}, note = {arXiv:2405.21028}
+}
+
+@article{archer2025,
+  author  = {Wang, Jiakang and Liu, Runze and Zhang, Fuzheng and Li, Xiu and Zhou, Guorui and Pan, Ling},
+  title   = {Stabilizing Knowledge, Promoting Reasoning: Dual-Token Constraints for {RLVR}},
+  journal = {arXiv preprint arXiv:2507.15778}, year = {2025}
+}
+
+@article{gtpo2025,
+  author  = {Tan, Hongze and Wang, Zihan and Pan, Jianfei and Lin, Jinghao and Wang, Hao and Wu, Yifan
+             and Chen, Tao and Zheng, Zhihang and Tang, Zhihao and Yang, Haihua},
+  title   = {{GTPO} and {GRPO-S}: Token and Sequence-Level Reward Shaping with Policy Entropy},
+  journal = {arXiv preprint arXiv:2508.04349}, year = {2025}
+}

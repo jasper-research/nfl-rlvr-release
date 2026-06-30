@@ -1,0 +1,49 @@
+% E1 -- faithful vs. corrupted reasoning. Curated verbatim excerpts from the blinded-judge
+% dump (paper/examples/E1_candidates.txt; eval/results/reasoning_judged_eval.jsonl, eval 2023).
+% Excerpts trimmed to the decisive lines; [...] marks elision; probabilities are the models' own.
+% Requires \usepackage{xcolor}; uses \ourdirect/\ourmasked colors if defined, else falls back.
+\providecommand{\statehead}[1]{\smallskip\noindent\textbf{#1}\par\smallskip}
+
+\begin{figure*}[t]
+\centering
+\small
+\begin{minipage}{0.99\textwidth}
+
+\statehead{Example 1.\quad Q4, 2:21 left. WAS trailing by 12, 2nd \& 6 at the NYG 8-yard line.
+Pregame line: WAS favored by 7.5. Empirical rate $\hat{p}=0.07$; WAS lost.}
+
+\begin{tabular}{@{}p{0.085\textwidth}@{\hskip 6pt}p{0.80\textwidth}@{\hskip 6pt}r@{}}
+\textit{Base (CoT)} &
+\emph{``[\,\dots] Touchdown and Extra Point: $0.8\times0.95=0.76$ or 76\%. Touchdown and
+Two-Point Conversion: $0.8\times0.4=0.32$ or 32\%. Total Probability: $0.76+0.32=1.08$, but
+since we can't exceed 100\%, we cap it at 100\%. [\,\dots] approximately 32\%.''} & $0.32$ \\[3pt]
+\textit{Masked-CoT (ours)} &
+\emph{``[\,\dots] a 12-point deficit with only 2 minutes and 21 seconds left [\,\dots] makes a
+comeback extremely challenging. Probability: 8\%.''} & $0.08$ \\
+\end{tabular}
+
+\medskip\hrule\medskip
+
+\statehead{Example 2.\quad Q4, 7:57 left. CHI leading by 3, 3rd \& 6 at the CAR 42-yard line.
+Pregame line: CHI favored by 3. Empirical rate $\hat{p}=0.80$; CHI won.}
+
+\begin{tabular}{@{}p{0.085\textwidth}@{\hskip 6pt}p{0.80\textwidth}@{\hskip 6pt}r@{}}
+\textit{Base (CoT)} &
+\emph{``[\,\dots] Base Probability (Favored by 3): 60--70\%. Adjustment for Poor Performance:
+$-10$ to $-20\%$. Final Probability: 40--50\%.''} \ (a leading, favored team, with the stated
+value at the bottom of its own adjusted range) & $0.40$ \\[3pt]
+\textit{Masked-CoT (ours)} &
+\emph{``[\,\dots] CHI is in a strong position to maintain their lead, as they are favored and
+have the ball [\,\dots] ample time to either score a touchdown or at least a field goal.
+Probability: 85\%.''} & $0.85$ \\
+\end{tabular}
+
+\end{minipage}
+\caption{Reasoning before and after gradient-masked CoT training, on identical game states
+(blinded-judge sample, 2023). In the base completions the stated probability does not follow from
+the text: an addition that sums to 108\% reports one of its branches, and a leading favorite is
+rated below an even chance. The masked-CoT model reads the live state and states a probability
+consistent with it, close to the empirical rate $\hat{p}$. Inconsistency of this kind falls from
+22.4\% of base completions to 4.4\% after masked training (\cref{fig:faithfulness}).}
+\label{fig:reasoning-examples}
+\end{figure*}

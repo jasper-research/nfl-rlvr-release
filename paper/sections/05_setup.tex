@@ -1,0 +1,44 @@
+% Section 5 -- Experimental setup. Flowing moderate sentences; long procedural sentences split;
+% state-component list deferred to Setting. Hardware = L40S (bf16 + LoRA).
+\section{Experimental setup}
+\label{sec:setup}
+
+States are drawn from National Football League regular-season play-by-play for the 2015 through 2024
+seasons, using the public nflfastR data \citep{yurko2018, nflfastr}. Each play is one training
+example: the game state of \cref{sec:setting}, paired with the realized outcome of whether the team in
+possession won. We split by season into $40{,}246$ training states for 2015 through 2022,
+$5{,}241$ for selection in 2023, and $5{,}185$ for test in 2024, so that no game appears in two splits.
+The empirical-rate target is estimated only from training-season outcomes, and no prompt contains the
+live market win probability; we verified that it appears in none of the $40{,}246$ training prompts.
+
+The base model is Qwen2.5-7B-Instruct, a dense non-thinking model, used with no supervised fine-tuning;
+the only training is reinforcement learning against the reward of \cref{eq:reward}. We use group-relative
+policy optimization \citep{grpo} as implemented in the TRL library, with vLLM rollouts colocated in the
+training process, on a single NVIDIA L40S (48\,GB) GPU. The policy is adapted with LoRA (rank $16$,
+$\alpha=32$, dropout $0.05$) on the attention and feed-forward projections, in bfloat16; at this scale one
+card holds the policy, the reference model, and the rollout engine without quantization. Each step
+samples eight completions per state at temperature $0.9$, uses a token-level loss \citep{dapo}, and
+performs a single on-policy update. We disable TRL's vLLM importance-sampling correction, which otherwise
+masks the loss under the small per-token mismatch between vLLM and training log-probabilities; with
+single-pass updates this recovers standard group-relative optimization. Training runs for $250$ steps
+with a $20$-step warmup, saving every $50$; we select the checkpoint by Brier score on the full 2023
+split and report it on 2024.
+
+The two models differ as in \cref{sec:decoupling}: the direct model emits the probability in at most $48$
+tokens, while the masked model emits up to $640$ tokens of reasoning and applies the gradient only to the
+final probability span. Both accumulate gradients over sixteen micro-batches and keep reward scaling on.
+The direct model uses a learning rate of $2\times10^{-5}$ and a KL coefficient of $0.01$; the masked model
+uses $3\times10^{-5}$ and a KL coefficient of zero. These values come from a learning-rate, batch-size,
+and KL sweep reported in \cref{app:hparams}.
+
+We compare against the untrained Qwen2.5-7B-Instruct, prompted with and without a chain of thought; a
+frontier model, DeepSeek-V4, prompted zero-shot through its API; the empirical-rate teacher $\hat p$; the
+nflverse win-probability model and a gradient-boosted model on the standard feature set
+(\cref{sec:results}); and the betting market, converted from odds to a win probability
+\citep{strumbelj2014} and used as a near-ceiling reference. We report the Brier score, the expected and
+maximum calibration error over ten equal-width bins, accuracy against the realized winner, and the Murphy
+decomposition. Confidence intervals are nonparametric bootstraps over plays with $10^4$ resamples, and
+two forecasters are compared on the same plays with a paired bootstrap of the per-play Brier difference.
+Reliability diagrams use the same ten bins. Checkpoint selection during training uses a fixed random
+sample of $128$ held-out 2023 states, scored greedily at each save point; all reported numbers use the
+full splits.

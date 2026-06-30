@@ -1,0 +1,12 @@
+% IN-TRAINING held-out (n=128), direct prediction, beta=0.01, scale_rewards on.
+% NOT recomputable from test preds; transcribed from notes/experiments.md.
+% p-hat & blend at lr 1e-5; outcome at lr 5e-6 (its most stable run).
+\begin{tabular}{lcc}
+\toprule
+Reward target & Brier & ECE \\
+\midrule
+Realized outcome $y\in\{0,1\}$ & 0.166 & 0.10 \\
+Blend $\tfrac{1}{2}y + \tfrac{1}{2}\hat{p}$ & 0.181 & 0.121 \\
+Empirical rate $\hat{p}$ (ours) & 0.154 & 0.050 \\
+\bottomrule
+\end{tabular}

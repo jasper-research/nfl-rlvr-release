@@ -1,0 +1,52 @@
+{
+  "_source": "W&B nfl-rlvr-calibration; full-gradient CoT runs (decalibrating). step 0 = base model.",
+  "runs": {
+    "v6_cot_outcome": {
+      "wandb_id": "hck70zak",
+      "name": "revived-lion-6",
+      "traj": {
+        "0": {
+          "ece": 0.1917,
+          "brier": 0.2525,
+          "resolution": 0.0444,
+          "reliability": 0.046,
+          "vegas_brier": 0.1451
+        },
+        "50": {
+          "ece": 0.2914,
+          "brier": 0.304,
+          "resolution": 0.0457,
+          "reliability": 0.0996,
+          "vegas_brier": 0.1451
+        }
+      }
+    },
+    "v9_cot_phat": {
+      "wandb_id": "9ivo06mi",
+      "name": "apricot-glade-9",
+      "traj": {
+        "50": {
+          "ece": 0.2156,
+          "brier": 0.2745,
+          "resolution": 0.0398,
+          "reliability": 0.0665,
+          "vegas_brier": 0.1451
+        },
+        "100": {
+          "ece": 0.2684,
+          "brier": 0.3155,
+          "resolution": 0.0302,
+          "reliability": 0.1026,
+          "vegas_brier": 0.1451
+        },
+        "150": {
+          "ece": 0.3031,
+          "brier": 0.3402,
+          "resolution": 0.0304,
+          "reliability": 0.1194,
+          "vegas_brier": 0.1451
+        }
+      }
+    }
+  }
+}

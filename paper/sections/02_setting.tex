@@ -1,0 +1,40 @@
+% Section 2 -- Setting and background. Flowing moderate sentences, no clause-stacked lists, no
+% forward-pointing signposts, no casual/defensive phrasing. Verified citations only.
+\section{Setting and background}
+\label{sec:setting}
+
+We forecast in-game win probability in American football. The state at a given play comprises the score
+margin, the quarter and time remaining, down and distance, field position, the team in possession, and
+the public pregame point spread. The forecaster returns a single probability that the team in possession
+wins. We draw states from regular-season National Football League games and partition them by season,
+training on 2015 through 2022, selecting on 2023, and testing on 2024, so that no game appears in more
+than one split.
+The only market signal in the prompt is the pregame point spread, which is fixed before kickoff and
+public; the live win probability the market quotes during the game is withheld from both the model and
+the reward, and enters only at evaluation.
+
+The output is a probability, and the label is a single realized outcome of a stochastic event. This
+separates the task from the calibration problems usually studied in reinforcement learning, where the
+model answers a question that has a correct answer and the quantity of interest is its confidence that
+the answer is right \citep{rlcr, dcpo}. That uncertainty is epistemic, and a stronger model can in
+principle reduce it. The uncertainty here is aleatoric: the outcome is random given the state, and no
+forecaster can remove it. The target of calibration is therefore the conditional win rate
+$\eta(x)=\Pr(\text{win}\mid x)$, not the correctness of an answer.
+
+We measure a forecaster by how closely its probabilities match observed frequencies. The Brier score,
+the mean squared error $(p-y)^2$ between a forecast $p$ and an outcome $y\in\{0,1\}$ \citep{brier1950},
+is strictly proper: among all functions of the state, its expectation is minimized uniquely by $\eta(x)$
+\citep{gneiting2007}. It decomposes into reliability, resolution, and uncertainty \citep{murphy1973}.
+Reliability is calibration, the agreement between stated probabilities and realized frequencies;
+resolution is sharpness, the spread of forecasts across states of differing outcome rate; uncertainty is
+fixed by the base rate. Because two forecasters can be equally calibrated yet differ in Brier score
+through resolution alone, we report calibration on its own, through the expected and maximum calibration
+error and reliability diagrams \citep{guo2017, brocker2007, dimitriadis2021}. We compare forecasters with
+a paired bootstrap over plays \citep{efron1979}. Calibration error also tests whether training found
+$\eta$ rather than memorizing the training outcomes, since a model that memorized them would be
+miscalibrated on held-out games.
+
+We take the betting market as the ceiling: it quotes a live win probability for each state and predicts
+outcomes more accurately than statistical models built from game features \citep{boulier2003,
+levitt2004}. We convert its odds to a probability \citep{strumbelj2014}. The gap between a forecaster and
+the market then measures the live in-game information that the public state lacks.

@@ -1,0 +1,121 @@
+\documentclass[10pt,twocolumn]{article}
+
+% ---------------------------------------------------------------------------
+% Verifiable Rewards from Outcomes: Calibrated Forecasting by Targeting the
+% Conditional Rate.  Compile: tectonic paper/main.tex (or pdflatex+bibtex).
+% Sections 3-4 are drafted; 1-2 and 5-9 are placeholders.
+% ---------------------------------------------------------------------------
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue!55!black, citecolor=green!45!black,
+  urlcolor=blue!70!black}
+\usepackage{cleveref}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,decorations.pathreplacing}
+
+% Figure palette (shared with figstyle.py / F2-F5).
+\definecolor{ink}{HTML}{21303F}
+\definecolor{accent}{HTML}{B1283A}
+\definecolor{cool}{HTML}{2F6F8F}
+\definecolor{nullc}{HTML}{9AA3AB}
+\definecolor{gridc}{HTML}{C7CCD1}
+
+\graphicspath{{figs/}}
+\captionsetup{font=small,labelfont=bf,skip=4pt}
+\newcommand{\ci}[2]{{\scriptsize[#1,\,#2]}}
+\newcommand{\phat}{\hat{p}}
+\setlength{\parskip}{0pt}
+
+% Float placement: allow full-width (figure*) floats at the page bottom too, and
+% loosen the fractions so wide floats distribute near their text rather than
+% piling onto dedicated float pages.
+\usepackage{stfloats}
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.75}
+\renewcommand{\dbltopfraction}{0.92}
+\renewcommand{\dblfloatpagefraction}{0.72}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
+\setcounter{dbltopnumber}{2}
+\raggedbottom
+
+\title{\vspace{-2.5em}\bfseries Verifiable Rewards for Calibrated Probabilistic Forecasting}
+\author{}
+\date{}
+
+\begin{document}
+\twocolumn[
+\maketitle
+\begin{@twocolumnfalse}
+\begin{abstract}
+\noindent
+Reinforcement learning with verifiable rewards can in principle train calibrated probabilistic
+forecasters, since a proper scoring rule such as the Brier score is computed from outcomes alone and is
+minimized in expectation by the true probability. In practice it degrades calibration, and existing
+remedies address epistemic uncertainty, where a model's confidence accompanies a verifiably correct or
+incorrect answer. We study aleatoric forecasting, where the forecast itself is the output and the label
+is one stochastic outcome, taking NFL in-game win probability as a testbed with the betting market as a
+reference. Rewarding the realized per-play outcome fails, because the single outcome is a noisy target
+and the policy gradient corrupts the chain of thought. We introduce a verifiable, label-free reward, a
+state-conditioned empirical win rate estimated from past outcomes, that removes the label noise, and we
+keep the gradient off the reasoning, by direct prediction or a gradient mask, so it cannot be corrupted.
+Trained with this reward alone, without human labels or supervised fine-tuning, a 7B model reaches the
+calibration of the betting market by direct prediction and is better calibrated than a zero-shot
+frontier model. That frontier model and a tabular estimator reach the same Brier score as this model,
+identifying the market's small remaining edge as live in-game information beyond their shared
+inputs. Masking the gradient,
+rather than dropping the chain of thought, preserves reasoning from which the forecast follows, which
+ordinary chain-of-thought training corrupts.
+\end{abstract}
+\vspace{1.2em}
+\end{@twocolumnfalse}
+]
+
+\input{sections/01_intro.tex}
+
+\input{sections/08_related.tex}
+
+\input{sections/02_setting.tex}
+
+\section{Method}\label{sec:method}
+We post-train the forecaster with group-relative reinforcement learning, computing the reward from a
+state-conditioned estimate of the win rate rather than from the realized outcome, and restricting the
+policy gradient to the tokens that carry the answer rather than to the whole completion.
+
+\input{sections/03_reward.tex}
+
+\input{sections/04_decoupling.tex}
+
+\input{sections/05_setup.tex}
+
+\input{sections/06_results.tex}
+
+\input{sections/09_conclusion.tex}
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+\appendix
+\onecolumn
+\input{sections/10_appendix.tex}
+
+\end{document}

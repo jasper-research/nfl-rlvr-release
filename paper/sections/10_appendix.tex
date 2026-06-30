@@ -1,0 +1,185 @@
+% Appendix (single column, after references). Four supporting analyses, all numbers traced to
+% notes/experiments.md and data/build_winrate_buckets.py. Same prose register as the body.
+
+\section{The empirical-rate target}
+\label{app:teacher}
+
+The reward target $\hat p(x)$ is a state-conditioned empirical win rate estimated from
+training-season outcomes. Each play is placed in a bucket defined by three game-level features: the
+score margin of the team in possession, in fourteen bins with edges at $\pm1$, $\pm4$, $\pm7$,
+$\pm10$, $\pm14$, and $\pm21$ points; the time remaining, in seven bins with edges at $2$, $5$,
+$10$, $15$, $30$, and $45$ minutes; and the public pregame point spread, in nine bins with edges at
+$\pm0.5$, $\pm3$, $\pm7$, and $\pm10$ points. A bucket's raw value is the fraction of its training
+plays whose possession team won. Sparse buckets are shrunk toward their coarser parents by a
+hierarchical empirical-Bayes rule: writing $n$ and $w$ for the count and wins in a bucket and
+$\hat p_{\text{parent}}$ for its parent estimate, the bucket value is
+$(w + M\,\hat p_{\text{parent}})/(n + M)$ with pseudocount $M=25$, applied from the global rate
+downward. The estimate for an evaluation play is read from the training-season table alone, so no
+test outcome enters its own target.
+
+Finer state features do not raise the target. A fine table that adds field position and down under
+the same hierarchical backoff matches the coarse table on game-level calibration: on the 2023 split
+the coarse target scores $0.153$ Brier and $0.012$ ECE against the fine table's $0.153$ and $0.010$,
+both close to the market's $0.150$ and $0.019$ (\cref{tab:granularity}). Field position and down
+shape the current drive rather than the game outcome, so the reward uses the coarse
+score-by-time-by-spread table.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+Target (eval 2023) & Brier & ECE \\
+\midrule
+Coarse: score $\times$ time $\times$ spread & 0.1532 & 0.0117 \\
+Fine: $+$ field position $+$ down & 0.1534 & 0.0099 \\
+Betting market & 0.1495 & 0.0193 \\
+\bottomrule
+\end{tabular}
+\caption{Teacher-granularity ablation on held-out 2023. Adding field position and down to the
+coarse buckets does not improve game-level calibration, so the reward target stays coarse.}
+\label{tab:granularity}
+\end{table}
+
+\section{Training and hyperparameter selection}
+\label{app:hparams}
+
+Every checkpoint is selected by Brier score on a fixed random sample of $128$ held-out 2023 states,
+scored greedily at each $50$-step save, and the two models are tuned separately. The numbers below
+are this in-training selection metric, with one setting varied at a time around a reference
+configuration; the reported test numbers use the full splits.
+
+For the direct model the learning rate matters most. Raising it from $5\times10^{-6}$ to
+$1\times10^{-5}$ lowers the in-training Brier from $0.160$ to $0.154$ at equal calibration error, and
+$2\times10^{-5}$ sharpens further at a higher calibration error; on the larger batch this higher rate
+is the optimum. Effective batch size, set by gradient accumulation, improves Brier up to four games per
+step and then saturates. Three negatives are decisive (\cref{tab:direct-sweep}): turning off reward
+scaling collapses resolution, blending the realized outcome back into the target at $\lambda=0.5$
+reintroduces its variance, and lowering the KL coefficient below $0.01$ worsens the calibration
+error. Temperature is neutral between $0.7$ and $1.0$, and the selected configuration varies by
+$0.004$ Brier across three seeds. The reported direct model uses a learning rate of $2\times10^{-5}$,
+gradient accumulation over sixteen micro-batches, a KL coefficient of $0.01$, and reward scaling on.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{llcc}
+\toprule
+Lever & Setting & Brier & ECE \\
+\midrule
+Reference & lr $1{\times}10^{-5}$, 2 games/step, rate target & 0.154 & 0.050 \\
+\midrule
+\multirow{2}{*}{Learning rate} & $5\times10^{-6}$ & 0.160 & 0.052 \\
+                               & $2\times10^{-5}$ & 0.152 & 0.079 \\
+\midrule
+\multirow{2}{*}{Effective batch} & 4 games/step (grad.\ accum.\ 16) & 0.149 & 0.099 \\
+                                 & 8 games/step (grad.\ accum.\ 32) & 0.152 & 0.100 \\
+\midrule
+\multirow{2}{*}{Reward target} & realized outcome $y$ & 0.166 & 0.065 \\
+                               & blend $\tfrac12 y + \tfrac12\hat p$ & 0.181 & 0.121 \\
+\midrule
+KL coefficient & $0.003$ & 0.157 & 0.100 \\
+Reward scaling & off & 0.178 & 0.064 \\
+Temperature & $1.0$ & 0.147 & 0.090 \\
+\bottomrule
+\end{tabular}
+\caption{Direct-model ablation, in-training selection metric (greedy, fixed $n=128$ held-out 2023,
+best-Brier checkpoint). Each row changes one setting from the reference. The learning rate and the
+effective batch size trade sharpness against calibration; reward scaling, the rate target, and a
+non-zero KL coefficient are decisive negatives when removed.}
+\label{tab:direct-sweep}
+\end{table}
+
+The masked model differs in two settings. The KL anchor must be removed: with the gradient
+concentrated on the few answer tokens, a coefficient of $0.01$ makes the $k_3$ KL estimator overflow
+and the loss diverge, and $1\times10^{-3}$ degrades calibration over training, while $\beta=0$ is
+stable because the answer-span mask already protects the reasoning the reference model would
+otherwise anchor. The learning rate follows an inverted-U with a higher optimum than for the direct
+model (\cref{tab:masked-sweep}): held-out Brier improves from $5\times10^{-6}$ to a peak at
+$3\times10^{-5}$ and collapses at $4\times10^{-5}$, where the unanchored update drives probabilities
+to extremes. The reported masked model uses a learning rate of $3\times10^{-5}$ and $\beta=0$.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{llc}
+\toprule
+Lever & Setting & Brier \\
+\midrule
+\multirow{3}{*}{KL coefficient} & $\beta=0$ & 0.174 \\
+                                & $\beta=1\times10^{-3}$ & 0.190 \\
+                                & $\beta=0.01$ & diverges \\
+\midrule
+\multirow{5}{*}{Learning rate ($\beta=0$)} & $5\times10^{-6}$ & 0.1745 \\
+                                           & $1\times10^{-5}$ & 0.1740 \\
+                                           & $2\times10^{-5}$ & 0.1717 \\
+                                           & $3\times10^{-5}$ & 0.1708 \\
+                                           & $4\times10^{-5}$ & over-sharpens \\
+\bottomrule
+\end{tabular}
+\caption{Masked-model ablation, held-out 2024 (n${=}1000$ subset, best checkpoint). The KL anchor
+must be removed, and the learning rate follows an inverted-U with an optimum at $3\times10^{-5}$,
+above which the unanchored, concentrated gradient drives the maximum-bin error past $0.5$.}
+\label{tab:masked-sweep}
+\end{table}
+
+\section{Blinded-judge protocol for reasoning quality}
+\label{app:judge}
+
+To measure reasoning quality we collect, for each model, its chain of thought on $250$ held-out 2023
+plays stratified across game states, with the ground-truth game facts taken from each play's
+features. A separate model judges every completion blind to its source and decides, with a quote
+from the completion supporting each judgment, whether the chain of thought misreads any of five game
+facts (possession, score, spread, clock, and the pregame favorite) and whether the stated
+probability follows from the reasoning. We audited the judge by reading every flagged case; each
+flag carries a specific checkable reason, and the judge flags the masked model alongside the others.
+
+State-reading errors are low and flat across the base model, the two full-completion reinforcement
+runs, and the masked model. Possession and score are misread in about one percent of completions,
+the pregame favorite in two to seven percent, the spread in three to six percent, and the clock in
+seven to ten percent, the last a base-model weakness that no training variant changes. Reinforcement
+learning does not corrupt the reading of the game.
+
+The models separate instead on whether the stated probability follows from the reasoning
+(\cref{tab:faithfulness}). The base model is inconsistent on $22.4\%$ of completions, and
+full-completion reinforcement learning does not improve it; the failures are broken probability
+arithmetic, drive-level and game-level probabilities conflated, and a final number the text does not
+support. The masked model is inconsistent on $4.4\%$. The masked prompt format accounts for much of
+the reduction, since a base model read under the masked prompt is inconsistent on $6.8\%$, and
+masked training lowers it further. At $250$ plays the format and training intervals overlap on this
+checkpoint, while a separate control on the reported checkpoint isolates a significant training
+effect.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lc}
+\toprule
+Model & Inconsistent reasoning [95\% CI] \\
+\midrule
+Base (chain of thought) & 22.4\% \ci{17.6}{27.6} \\
+Full-completion RL (run A) & 18.8\% \ci{14.4}{23.6} \\
+Full-completion RL (run B) & 14.0\% \ci{10.0}{18.4} \\
+Base, masked prompt (no training) & 6.8\% \ci{4.0}{9.6} \\
+Masked-CoT RLVR (ours) & 4.4\% \ci{2.0}{7.2} \\
+\bottomrule
+\end{tabular}
+\caption{Rate at which the stated probability does not follow from the chain of thought, blinded
+judge over $250$ held-out 2023 plays. Full-completion reinforcement learning does not improve on the
+base rate; the masked prompt format reduces it sharply and masked training reduces it further.}
+\label{tab:faithfulness}
+\end{table}
+
+\section{Data-integrity audit}
+\label{app:integrity}
+
+The prompt exposes one market-derived quantity, the public pregame point spread, and never the live
+in-game win probability that serves as the evaluation reference. We scanned all $40{,}246$ training
+prompts and the 2023 and 2024 evaluation prompts for the market win probability and found no
+occurrence. The empirical-rate target is built only from realized outcomes and the pregame spread,
+and the target for an evaluation play is computed from the training-season table alone, so neither
+the market probability nor any test outcome enters training. The splits are disjoint by season,
+training on 2015 through 2022, selecting on 2023, and testing on 2024, so no game appears in more
+than one split. Every reported number is recomputed from the per-play predictions by a single
+deterministic script, so the tables and figures reproduce from the released predictions without a
+GPU.

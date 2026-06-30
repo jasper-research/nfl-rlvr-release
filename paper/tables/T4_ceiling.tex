@@ -1,0 +1,14 @@
+% static-feature Brier ceiling. Only the coarse buckets and the LLM reach the LLM tier;
+% richer-feature static models are worse. Vegas's edge is live information.
+\begin{tabular}{lcc}
+\toprule
+Static-feature forecaster & Brier & ECE \\
+\midrule
+Coarse $\hat{p}$ (our reward) & 0.1432 & 0.0437 \\
+nflverse WP model & 0.1562 & 0.0188 \\
+GBM, all features & 0.1584 & 0.0260 \\
+\midrule
+Direct RLVR (ours) & 0.1443 & 0.0292 \\
+Betting market & 0.1355 & 0.0273 \\
+\bottomrule
+\end{tabular}

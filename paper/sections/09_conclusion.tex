@@ -1,0 +1,40 @@
+% Section 9 -- Conclusion. Plain, direct prose (RAG register): the conceptual contribution, the
+% mechanism in relation to DCPO / Bereket & Leskovec, the triangulation as a diagnostic, limitations,
+% future work. No editorial teasers, no clefts.
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have shown that reinforcement learning can calibrate a probabilistic forecaster to the level of the
+betting market using only realized game outcomes, without human labels or supervised fine-tuning.
+Verifiable-reward training has used the realized label as the reward, which is well behaved when that
+label is deterministic but injects irreducible variance when the outcome is stochastic. We reward an
+aggregate of those same labels, a state-conditioned empirical rate, which is equally verifiable and far
+less noisy, and which turns a proper scoring rule into a usable training signal for events that have no
+correct answer. This carries verifiable-reward training from tasks with a right answer to forecasting,
+where the answer is itself a probability.
+
+Even with the denoised target, taking the gradient through a chain of thought decalibrates the model,
+because optimizing the final probability rewrites the reasoning that produced it. This refines earlier
+accounts: the accuracy-calibration gradient conflict \citep{dcpo} and the overconfidence attributed to
+the group-standard-deviation normalization of the advantage \citep{uncalibrated_reasoning} both take the
+realized outcome as the target, whereas with a denoised target that normalization is instead necessary
+and the problem that remains is the gradient's reach into the reasoning. Confining the gradient to the answer
+removes it, by dropping the reasoning or by masking the gradient on it, and the masked variant keeps a
+chain of thought from which the forecast follows.
+
+Three unrelated estimators converge on the same Brier score: a reinforcement-trained small model, a
+frontier model, and a tabular rate. The convergence is strong evidence that the score is the limit set
+by the information in the public game state, not a property of any one of them. It is also a practical
+test of whether a forecaster has exhausted its inputs: once unrelated methods agree, further accuracy
+must come from new information, not a larger model. A market, where one exists, supplies the
+independent reference that makes the test sharp.
+
+The method reaches a strong reference only where the public state already carries most of the predictive
+signal, and where outcomes are dense and resolved quickly enough to estimate a reliable empirical rate;
+sparse or long-horizon events would weaken both the reward and the comparison against a market. Within
+these limits the empirical rate could be enriched with more state features or replaced by a learned rate
+model to raise the ceiling it imposes, and the same reward and gradient mask should extend to other
+aleatoric domains where calibrated probabilities matter and outcomes are eventually observed, from
+weather to elections to clinical prognosis. Calibrated forecasting can be learned from outcomes alone,
+and a small open model can match a market once its reward and its gradient are aligned with the quantity
+it is asked to forecast, while still exposing the reasoning behind each prediction.

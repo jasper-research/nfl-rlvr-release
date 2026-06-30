@@ -1,0 +1,15 @@
+% requires \booktabs. Brier shows 95% bootstrap CI (10k reps over plays).
+\begin{tabular}{lccccc}
+\toprule
+System & Brier & ECE & MCE & Acc. & Resolution \\
+\midrule
+Qwen2.5-7B zero-shot (direct) & 0.2057\,{\scriptsize[0.2016,\,0.2098]} & 0.0569 & 0.2539 & 0.644 & 0.0388 \\
+Qwen2.5-7B zero-shot (CoT) & 0.1681\,{\scriptsize[0.1626,\,0.1736]} & 0.0687 & 0.1493 & 0.756 & 0.0875 \\
+Masked-CoT RLVR (ours) & 0.1522\,{\scriptsize[0.1466,\,0.1577]} & 0.0293 & 0.0684 & 0.777 & 0.0986 \\
+Direct RLVR (ours) & 0.1443\,{\scriptsize[0.1394,\,0.1491]} & 0.0292 & 0.0596 & 0.784 & 0.1058 \\
+DeepSeek-V4 zero-shot & 0.1438\,{\scriptsize[0.1392,\,0.1483]} & 0.0430 & 0.0716 & 0.790 & 0.1078 \\
+\midrule
+Empirical rate $\hat{p}$ & 0.1432\,{\scriptsize[0.1384,\,0.1480]} & 0.0437 & 0.0993 & 0.783 & 0.1083 \\
+Betting market & 0.1355\,{\scriptsize[0.1307,\,0.1403]} & 0.0273 & 0.0824 & 0.799 & 0.1148 \\
+\bottomrule
+\end{tabular}

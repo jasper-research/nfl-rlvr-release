@@ -1,0 +1,14 @@
+# Data pipeline + reward dev (local, CPU-only — no GPU needed).
+nfl_data_py==0.3.2   # 0.3.3 pins pandas<2.0; 0.3.2 works with pandas 2.x/3.x
+pandas>=2.0
+pyarrow>=14.0
+numpy>=1.26
+tqdm>=4.66
+
+# Tests
+pytest>=8.0
+
+# Training / generation deps (RunPod + local MLX) are installed separately;
+# see train/README notes. Kept out of this file so the data pipeline stays
+# installable on a laptop with no CUDA / no model frameworks.
+matplotlib>=3.8

@@ -1,0 +1,64 @@
+% Section 1 -- Introduction. Flowing prose (RLCR/DCPO/RAG register): technical opening, moderate
+% connected sentences, no signpost filler, no defensive framing, no em-dashes. Contributions as a
+% short enumerate (the one \paragraph the RAG paper uses).
+\section{Introduction}
+\label{sec:intro}
+
+\input{sections/F1_principle.tex}
+
+Reinforcement learning with verifiable rewards (RLVR) post-trains a language model against a reward
+computed from observed outcomes \citep{grpo, deepseek_r1}. Calibrated probabilistic prediction is a
+natural target for it: a proper scoring rule such as the Brier score is computable from outcomes alone
+and is minimized in expectation by the true probability \citep{brier1950, gneiting2007}, so optimizing
+it should produce forecasts whose probabilities match observed frequencies.
+
+In practice, reinforcement learning does the opposite, degrading calibration and leaving models
+overconfident, whether the reward is human feedback \citep{leng2024} or a verifiable correctness signal
+\citep{dcpo, uncalibrated_reasoning}. The work that corrects this addresses epistemic uncertainty, where
+the model answers a question that has a correct answer and the goal is a calibrated confidence that the
+answer is right \citep{rlcr, dcpo}.
+
+A second kind of uncertainty is left untreated. It is aleatoric: the output is itself a probability, and
+the label is a single realized outcome of a stochastic event, with no answer that can be called correct.
+NFL in-game win probability is a clear instance. At any point in a game the forecaster states the
+probability that the team in possession wins; the realized result is one Bernoulli draw from a rate that
+no model observes directly; and the betting market provides a strong, independent estimate of that rate.
+Whether RLVR can train a calibrated forecaster in this regime, and what makes it fail, has not been
+studied.
+
+Reinforcement learning against the per-play Brier score decalibrates such a forecaster through two
+mechanisms. The label for a play is a single realized outcome, one draw from the rate being estimated,
+so a reward scored against it has high variance and pulls the policy toward whichever result occurred.
+When the model reasons in language before answering, a second problem appears: optimizing the final
+probability rewrites the reasoning into incoherent arguments. We remove the variance by rewarding a
+state-conditioned empirical win rate estimated from past outcomes, a verifiable and label-free target,
+and we remove the corruption by keeping the policy gradient off the reasoning, through direct prediction
+or a gradient mask over the answer tokens (\cref{fig:principle}). We train Qwen2.5-7B-Instruct without supervised fine-tuning
+and evaluate on held-out seasons against the betting market, a frontier model, and the empirical-rate
+table.
+
+Trained by direct prediction, the model matches the market's calibration on held-out games, at an
+expected calibration error of $0.029$ against the market's $0.027$, and it is better calibrated than a
+zero-shot frontier model, with no human labels and no access to the market. On the Brier score it
+matches that frontier model and a tabular estimator, the limit that the public game state allows; the
+market's small remaining edge is the live in-game information none of them can see. Masking
+the gradient instead of discarding the reasoning keeps the chain of thought faithful, lowering the rate
+at which the stated probability does not follow from it from $22\%$ to $4\%$, at a small cost in
+sharpness.
+
+\paragraph{Contributions.}
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt,topsep=2pt]
+\item Our reward, a state-conditioned empirical win rate estimated from realized outcomes, is verifiable
+and label-free, and replaces the single realized outcome, whose variance decalibrates per-play Brier
+training; on held-out games it scores within $0.007$ Brier of the betting market
+(\cref{sec:reward}).
+\item Reinforcement learning decalibrates the forecaster through the gradient on the chain of thought,
+not through the reward: with the rate target, training the full completion drives held-out ECE
+from $0.19$ to $0.30$, whereas confining the gradient to the answer, by direct prediction or an
+answer-span mask, holds it near the market's (\cref{sec:decoupling}).
+\item With the chain of thought dropped, the model reaches the information ceiling of the public game
+state: it matches the market's calibration ($0.029$ against $0.027$ ECE), is better calibrated than a
+zero-shot frontier model, and
+reaches the same Brier score as that frontier model and a tabular rate estimator, leaving the market's
+edge as live in-game information (\cref{sec:results}).
+\end{enumerate}

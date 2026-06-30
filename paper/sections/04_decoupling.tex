@@ -1,0 +1,76 @@
+% Section 4.2 -- Decoupling. Plain, direct, number-backed prose (RAG Results register).
+\subsection{Decoupling reasoning from the gradient}
+\label{sec:decoupling}
+
+The rate target alone is not enough, because a chain of thought before the answer lets the same reward
+make calibration worse. Applied to the full completion, the reward of \cref{eq:reward} drives the
+held-out Brier score from the base model's $0.25$ to $0.34$ and the calibration error from $0.19$ to
+$0.30$ (\cref{fig:trajectory}). The policy gradient passes through the reasoning tokens, so raising the
+reward on the final probability rewrites the reasoning before it into pseudo-quantitative arguments for
+ever more extreme numbers. This is the accuracy-calibration gradient conflict reported for
+verifiable-reward training \citep{dcpo}.
+
+Two changes keep the reward and stop the gradient from reaching the reasoning. The first, the direct
+model, drops the chain of thought and emits the probability directly. With no reasoning tokens to
+corrupt, the reward calibrates the model, and the held-out Brier score reaches the teacher's level
+within fifty steps and stays there. The second, the masked model, keeps the chain of thought but masks
+the gradient. We narrow the completion mask, which selects the tokens that receive advantage, to the
+final ``Probability: NN\%'' span, so the reasoning is still sampled and still conditions the answer but
+gets no gradient. Masking the gradient
+needs the KL penalty turned off, because on the few tokens of the answer span the gradient is
+concentrated enough to make the penalty's estimator overflow and the loss diverge, and the masked
+reasoning no longer needs the reference-model anchor. With the mask in place, the masked model
+calibrates as well as the direct model.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{F2_trajectory.pdf}
+\caption{Held-out calibration during training (fixed $n=128$). Applied to the full completion, the
+reward of \cref{eq:reward} drives a chain-of-thought policy away from calibration on both Brier (a) and
+ECE (b). Removing the reasoning from the gradient, by direct prediction or by masking the gradient to
+the answer span, recovers calibration to the teacher's level. The full-completion and masked runs share
+the same reward, prompt, and base model, and differ only in the gradient mask.}
+\label{fig:trajectory}
+\end{figure*}
+
+The masked model is slightly less accurate than the direct model. On held-out 2024 games the direct
+model reaches a Brier of $0.144$ and the masked model $0.152$, a gap of $0.008$ by a paired bootstrap
+over plays (95\% CI $[0.006, 0.010]$). The gap is small, and far below the base-to-teacher gap that the
+reward closes. Both trained models trail the market on Brier, but the shortfall is in resolution, not
+calibration: the direct model's calibration error of $0.029$ matches the market's $0.027$, and its Brier
+is higher only because the static prompt cannot see the live information the market uses to separate
+states more sharply (\cref{sec:results}).
+
+\begin{table}[t]
+\centering
+\setlength{\tabcolsep}{4.5pt}
+\input{tables/T3_decoupling.tex}
+\caption{Paired bootstrap over held-out 2024 plays ($n=5185$, $10^4$ resamples). Masking the gradient
+to the answer span costs a small but significant amount of Brier relative to discarding the reasoning;
+both decoupled models trail the market by a similar, significant margin that \cref{sec:results}
+attributes to resolution rather than calibration.}
+\label{tab:decoupling}
+\end{table}
+
+The masked model keeps its reasoning coherent. A blinded judge read each completion and decided whether
+the stated probability follows from the reasoning, and the rate of inconsistent completions falls from
+$22.4\%$ for the base model to $4.4\%$ after masked training. Full-completion reinforcement learning
+leaves the base rate unchanged, so the gain comes from the masked objective and not from reinforcement
+learning in general, and a control that applies the masked prompt without training accounts for only
+part of it. The base model writes arithmetic that does not sum and then reports an unrelated number, or
+rates a clear favorite below an even chance, while the masked model reads the live state and states a
+probability that follows from it (\cref{fig:reasoning-examples}). A probability lookup cannot do this,
+so the masked model is the better choice when a forecast must be explained, at the cost of slightly
+lower sharpness than direct prediction.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{F5_faithfulness.pdf}
+\caption{Rate at which the stated probability does not follow from the model's own chain of thought, on
+a blinded-judge sample of held-out plays (95\% bootstrap intervals). Full-completion chain-of-thought
+reinforcement learning leaves the base rate unchanged; masked training reduces it sharply, beyond what
+the masked prompt format alone accounts for.}
+\label{fig:faithfulness}
+\end{figure*}
+
+\input{examples/E1_reasoning.tex}

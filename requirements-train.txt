@@ -1,0 +1,20 @@
+# RunPod A100 80GB training stack (CUDA). Installed on the pod, not the Mac.
+# Pin loosely; verify exact versions on the pod (TRL's GRPO API moves fast).
+torch>=2.4
+transformers>=4.46
+trl>=0.13
+peft>=0.13
+# OPTIONAL — only for 4-bit/QLoRA on <=24GB GPUs; NOT needed for bf16 (our default on >=48GB).
+# Must match the pod's CUDA: CUDA 13 -> bitsandbytes>=0.48 AND `pip install nvidia-nvjitlink-cu13`
+# with its lib dir on LD_LIBRARY_PATH. Left out by default so the bf16 path has no broken import.
+# bitsandbytes>=0.48
+accelerate>=1.0
+datasets>=3.0
+# Use the vLLM that matches the pod's torch (cu128/torch2.8 ships vLLM 0.23). TRL 1.6 warns
+# it's outside 0.12–0.19, but that's advisory and colocate works; do NOT pin it down or you'll
+# drag torch back and break CUDA. If colocate genuinely errors, upgrade TRL (not downgrade vLLM).
+vllm>=0.12
+wandb>=0.18
+pyyaml>=6.0
+numpy>=1.26
+# flash-attn   # optional; speeds attention but the build is slow — enable if you have time

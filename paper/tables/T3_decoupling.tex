@@ -1,0 +1,12 @@
+% paired bootstrap, per-play Brier difference (negative => row-A better). $\ast$=95% CI excludes 0.
+\begin{tabular}{lcc}
+\toprule
+Paired comparison (Brier) & $\Delta$ & 95\% CI \\
+\midrule
+Direct $-$ Masked-CoT & -0.0079$^{\ast}$ & {\scriptsize[-0.0101,\,-0.0057]} \\
+Direct $-$ Market & +0.0088$^{\ast}$ & {\scriptsize[0.0068,\,0.0107]} \\
+Masked-CoT $-$ Market & +0.0167$^{\ast}$ & {\scriptsize[0.0140,\,0.0194]} \\
+Direct $-$ DeepSeek-V4 & +0.0005 & {\scriptsize[-0.0019,\,0.0028]} \\
+DeepSeek-V4 $-$ Market & +0.0083$^{\ast}$ & {\scriptsize[0.0064,\,0.0102]} \\
+\bottomrule
+\end{tabular}

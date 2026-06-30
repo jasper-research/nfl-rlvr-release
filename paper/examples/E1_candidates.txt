@@ -1,0 +1,49 @@
+51 plays: base inconsistent, masked-CoT consistent
+
+2023_10_CLE_BAL | Q1 02:10 | CLE CLE trailing by 14 | down 3&2 | own 33 | spread CLE 6.0 | phat=0.06 outcome=1
+  BASE p=0.01: The reasoning correctly notes it's Q1 with 2:10 left (most of the game remains), yet the clock_misread treats this as near end-of-game with 'very little time,' leading to an implausibly low 1% win probability that doesn't follow from a Q1 deficit scenario.
+  WS2  p=0.05: The reasoning concludes CLE has an extremely low chance of winning, consistent with the stated 5% probability.
+
+2023_06_BAL_TEN | Q1 00:52 | BAL tied | down 2&5 | opponent 11 (red zone) | spread BAL 5.5 | phat=0.76 outcome=1
+  BASE p=0.35: The reasoning describes BAL in the red zone, tied, favored by 5.5, with a realistic scoring opportunity, yet concludes only 35% win probability — well below 50% — without justification for why the favored team in a tied game with a red-zone possession should be such an underdog.
+  WS2  p=0.78: The reasoning concludes BAL has a high probability of winning and the stated 78% aligns with that conclusion.
+
+2023_02_LAC_TEN | overtime 05:06 | TEN tied | down 3&10 | opponent 23 | spread TEN 2.5 | phat=0.87 outcome=1
+  BASE p=0.55: The reasoning concludes TEN has a moderate chance and is the underdog, yet assigns TEN a 55% win probability, which contradicts the underdog framing and the stated 40% scoring estimate.
+  WS2  p=0.58: The reasoning concludes ~55-60% and the stated probability of 58% falls within that range.
+
+2023_10_CAR_CHI | Q4 07:57 | CHI CHI leading by 3 | down 3&6 | opponent 42 | spread CHI 3.0 | phat=0.80 outcome=1
+  BASE p=0.4: The reasoning concludes 'Base Probability 60-70%' then subtracts 10-20% yielding 40-50%, but CHI is leading by exactly the spread amount with possession in opponent territory — the reasoning's own logic should yield a higher final estimate; moreover the stated final probability of 0.4 sits at the bottom of even the adjusted range.
+  WS2  p=0.85: The reasoning concludes CHI is in a strong position and the stated 85% probability follows naturally from that conclusion.
+
+2023_11_NYG_WAS | Q4 02:21 | WAS WAS trailing by 12 | down 2&6 | opponent 8 (red zone) | spread WAS 7.5 | phat=0.07 outcome=0
+  BASE p=0.32: The reasoning calculates 76% for TD+XP and 32% for TD+2pt, then adds them to get 108% (capped at 100%), yet concludes with 32% — which matches only the two-point conversion branch and contradicts the reasoning's own arithmetic.
+  WS2  p=0.08: The reasoning concludes a comeback is extremely challenging given the 12-point deficit and ~2:21 remaining, and the stated 8% probability aligns with that conclusion.
+
+2023_14_DET_CHI | Q2 02:33 | DET DET trailing by 4 | down 2&6 | opponent 31 | spread DET 3.0 | phat=0.57 outcome=0
+  BASE p=0.57: The reasoning calculates winning scenarios as 57% and losing scenarios as 40%, but these don't sum to 100%, and the 'losing scenario' of 40% actually describes a field goal (which would be a win, not a loss), making the final 57% figure internally inconsistent with the stated math.
+  WS2  p=0.45: The reasoning concludes DET has a reasonable but not high chance, and the 45% probability is consistent with that characterization.
+
+2023_13_IND_TEN | overtime 06:04 | TEN tied | down 1&10 | opponent 38 | spread TEN 1.5 | phat=0.73 outcome=0
+  BASE p=0.7311: The reasoning's own math yields 0.7311 but the calculation is internally incoherent (adds touchdown and field goal probabilities exceeding 1.0, double-counts overtime advantage), making the stated final probability not faithfully derived from a coherent chain of reasoning.
+  WS2  p=0.5: The reasoning concludes a moderate but not high chance, and the stated 50% aligns with that conservative estimate given the tied score.
+
+2023_05_GB_LV | Q1 03:26 | GB tied | down 2&15 | opponent 25 | spread GB 1.0 | phat=0.55 outcome=0
+  BASE p=0.78: The reasoning's own combined probability calculation yields 0.78 for scoring on this drive, not for winning the game, yet the forecaster directly equates this drive-scoring probability with the game win probability without justification.
+  WS2  p=0.4: The reasoning concludes GB is unlikely to win due to underdog status and challenging situation, and the stated 40% probability is consistent with that conclusion.
+
+2023_06_NYG_BUF | Q4 02:30 | NYG NYG trailing by 5 | down 1&10 | own 36 | spread NYG 15.5 | phat=0.15 outcome=0
+  BASE p=0.15: The reasoning estimates NYG has a '20% chance of making a comeback' yet the final stated probability is 15%, which contradicts the reasoning's own adjusted figure.
+  WS2  p=0.08: The reasoning concludes win probability is quite low given the spread and game situation, consistent with the stated 8%.
+
+2023_12_CLE_DEN | Q2 06:12 | CLE CLE trailing by 14 | down 2&11 | opponent 18 (red zone) | spread CLE 1.5 | phat=0.14 outcome=0
+  BASE p=0.35: The reasoning concludes a win probability of approximately 10-15%, but the stated final probability is 0.35 (35%), which contradicts the reasoning's own conclusion.
+  WS2  p=0.03: The reasoning concludes an extremely low win probability and the stated 3% is consistent with that conclusion.
+
+2023_14_LA_BAL | overtime 10:00 | BAL tied | down 1&10 | own 25 | spread BAL 7.5 | phat=0.53 outcome=1
+  BASE p=0.45: The reasoning concludes BAL is 'still a strong contender' with a range of 40-50%, yet settles on 45%, which is below even-money despite BAL having possession, being the pregame favorite, and the score being tied — the reasoning's own logic supports a figure above 50%.
+  WS2  p=0.58: The reasoning concludes a 'reasonable chance' around 55-60% and the stated probability of 58% falls within that range.
+
+2023_22_SF_KC | overtime 06:05 | KC KC trailing by 3 | down 4&1 | own 34 | spread KC 1.5 | phat=0.36 outcome=1
+  BASE p=0.56: The reasoning's own math (22.75% + 33.25% = 56%) is internally flawed—if KC fails the 4th and 1 they cannot then kick a field goal from their own 34, so the field goal branch is logically invalid—but the stated 56% does match the arithmetic sum presented, making the final number consistent with the (flawed) calculation shown.
+  WS2  p=0.25: The reasoning concludes KC's chances are low given the difficult situation, and the stated 25% probability is consistent with that conclusion.

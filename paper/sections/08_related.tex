@@ -1,0 +1,42 @@
+% Section 8 -- Related work. DCPO/RLCR attribution register; long two-paper sentences split into
+% one claim per sentence. Verified citations only.
+\section{Related work}
+\label{sec:related}
+
+Reinforcement learning improves accuracy but degrades calibration, leaving models overconfident.
+\citet{leng2024} attribute this, under human feedback, to a reward model that prefers confident answers.
+\citet{dcpo} identify a conflict between the accuracy and calibration gradients under verifiable rewards,
+and decouple the two with a masked-gradient update. \citet{uncalibrated_reasoning} attribute the
+overconfidence on binary stochastic outcomes to the standard-deviation normalization in the
+group-relative advantage, which they remove. These analyses take the realized outcome as the target.
+With a denoised conditional-rate target we find instead that the normalization is necessary, and that the
+overconfidence is driven by the gradient on the reasoning rather than by the advantage.
+
+A second class of methods rewards a proper scoring rule on a verbalized confidence. \citet{rlcr} add a
+Brier-score term to a correctness reward, \citet{rewarding_doubt} use the logarithmic score, and
+\citet{band2024} reward a downstream reader's accuracy. These score a confidence in an answer that is
+right or wrong. We score the forecast itself against a state-conditioned empirical rate, where the label
+is a single stochastic outcome and correctness is undefined.
+
+Language models are also trained and evaluated as event forecasters. \citet{halawi2024} approach
+human-crowd accuracy through retrieval and aggregation, and \citet{pratt2024} find that prompting
+strategies do not yield calibrated forecasts. \citet{turtel2025outcome} reward realized outcomes on
+prediction-market and news questions, and \citet{turtel2025selftaught} rank self-generated forecasts
+against outcomes. Both improve calibration while keeping the chain of thought and rewarding the outcome,
+whereas we reward the conditional rate and mask the gradient off the reasoning. \citet{paleka2025} and
+\citet{karger2024forecastbench} document temporal leakage in such evaluations, which our season-disjoint
+test on resolved games avoids.
+
+Our training is a choice of credit assignment within group-relative optimization \citep{grpo}. DAPO
+\citep{dapo} and GPG \citep{gpg2026} remove the KL penalty and reference model, as we do. \citet{rpg2026}
+analyze the instability of the KL estimator when the gradient concentrates on a few tokens.
+\citet{wang2025entropy} restrict updates to high-entropy tokens, and \citet{archer2025, gtpo2025} treat
+reasoning and answer tokens differently. Our answer-span mask restricts the gradient by token role.
+
+Win-probability estimation for the NFL ranges from random forests \citep{lock2014} to the boosted models
+of the nflverse pipeline \citep{yurko2018, nflfastr}, which we use as static baselines. \citet{brill2024}
+show that play-by-play data bounds the accuracy of any such model, consistent with our reading of the
+market's edge as structural. \citet{polson2015} treat the point spread as an implied volatility. The
+betting market is known to predict outcomes more accurately than statistical models or individual bettors
+\citep{boulier2003, levitt2004, franck2010, cox2021}. We convert market odds to probabilities following
+\citet{strumbelj2014} and use them only as a reference.

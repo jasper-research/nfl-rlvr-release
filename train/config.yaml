@@ -1,0 +1,96 @@
+# GRPO training config — Qwen2.5-7B-Instruct (dense, non-thinking), calibration RLVR.
+# Field-standard RLVR base; concise outputs => short rollouts, cheap + clean parsing.
+# Pure Brier reward, KL on. See plan Appendix B.
+
+model:
+  name: Qwen/Qwen2.5-7B-Instruct  # dense 7B, non-thinking — field-standard RLVR base
+  trust_remote_code: true
+  load_in_4bit: false             # bf16 + LoRA — correct for >=48GB GPUs (no bitsandbytes needed).
+                                  # 4-bit/QLoRA only helps on <=24GB cards and slightly hurts
+                                  # quality. To enable on a small GPU, match bitsandbytes to the
+                                  # pod CUDA (CUDA 13 -> bnb>=0.48 + nvidia-nvjitlink-cu13 on LD path).
+  bnb_4bit_quant_type: nf4
+  bnb_4bit_compute_dtype: bfloat16
+  attn_implementation: sdpa       # set flash_attention_2 if flash-attn is installed
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  # Standard attention + MLP projections for dense Qwen2.5.
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+grpo:
+  num_generations: 8             # group size G
+  max_prompt_length: 512
+  max_completion_length: 48      # v10: no CoT — model emits just the % (also ~10x faster steps)
+  direct_answer: true            # v10 (Path A): strip chain-of-thought so RL can't corrupt the
+                                 # reasoning; emit probability directly. Tests if reasoning-corruption
+                                 # (not the reward) is the decalibration cause. false = normal CoT.
+  temperature: 0.9
+  top_p: 0.95
+  beta: 0.01                     # v7: 0.003->0.01. v6 trained but DECALIBRATED (ECE 0.19->0.30 over
+                                 # 150 steps) — per-sample Brier on single outcomes chased the batch's
+                                 # realized coin-flips. Modest anchor to the calibrated base while the
+                                 # bigger batch (below) lowers the gradient variance.
+  learning_rate: 5.0e-6          # v5: back to a sane value. The 2e-5 in v4 proved LR was inert (the
+                                 # IS-ratio collapse zeroed the gradient). With token-level IS the
+                                 # gradient is restored (~1e5x larger), so pull LR down to avoid
+                                 # divergence. Watch grad_norm jump 2e-5 -> ~0.1-1 = fix confirmed.
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 8  # v8: back to 16 games/step (fast). The soft target (reward
+                                  # below) removes the contradictory-target noise at the source, so
+                                  # the huge batch v7 used is no longer needed.
+  num_iterations: 1              # TRL refreshes the reference model internally
+  max_steps: 250                 # v7: each step is 3x richer now, so half the steps (~similar wall-clock)
+  warmup_steps: 20               # v2: longer warmup for the higher LR
+  logging_steps: 1               # log every step (watch grad_norm/kl from step 1, not step 5)
+  save_steps: 50
+  save_only_model: true          # adapters only — skip optimizer/scheduler/rng in checkpoints
+                                 # (we don't resume sweep runs). Halves checkpoint size; keeps disk sane.
+  loss_type: dr_grpo             # token-level (DAPO-style); ignored if TRL lacks it
+  importance_sampling_level: token  # GRPO policy-ratio level (token, not sequence).
+  vllm_importance_sampling_correction: false  # THE ROOT-CAUSE FIX (v6): TRL's default vLLM TIS mode
+                                    # is `sequence_mask` — it masks any completion whose vLLM-vs-train
+                                    # ratio is outside [_, clip_max=3.0]. The 0.03/token vLLM/HF
+                                    # mismatch compounds over ~600 tokens -> per-seq ratio ~1e-5 ->
+                                    # EVERY completion masked -> empty loss -> grad_norm 2e-5 -> model
+                                    # never updated (v1-v5). Disabling it = standard on-policy GRPO
+                                    # (num_iterations=1, so the residual mismatch bias is negligible).
+  scale_rewards: true            # v9: false->true. v8 (false) made grad tiny (~0.005) so only easy
+                                 # favorite/leading cases moved toward target in 50 steps; the hard
+                                 # spread-vs-live-state cases barely budged. Restore unit-scale
+                                 # advantages so the (correct) soft-target gradient actually bites.
+  use_vllm: true
+  vllm_mode: colocate                 # run vLLM in-process (no separate `trl vllm-serve`)
+  vllm_gpu_memory_utilization: 0.45   # leave room for the training copy on one GPU
+
+reward:
+  use_soft_target: true          # v8: score against the state-conditioned empirical win-rate p̂
+                                 # (`target` column from data/build_winrate_buckets.py), NOT the raw
+                                 # 0/1 outcome. Removes the coin-flip noise / contradictory targets
+                                 # that decalibrated v6/v7. Set false for the pure-outcome ablation.
+  blend_lambda: 1.0              # WS1 ablation: reward = λ·p̂ + (1-λ)·y. 1.0 = pure soft target.
+  sharpness_weight: 0.0          # ablation only; turn on if mean_confidence collapses to ~0
+  format_penalty: 0.0            # parse-fail reward (confirmed default)
+  clip: [0.01, 0.99]
+
+eval:
+  subset: 128                    # v4: FIXED RANDOM 128 held-out games (not first-N) + step-0 baseline
+  max_new_tokens: 48             # v10: no-CoT direct answer is short (eval also ~10x faster)
+  batch_size: 8                  # ~16 batches; comparable across steps because the sample is fixed
+
+data:
+  train: data/grpo/train.jsonl
+  eval: data/grpo/eval.jsonl
+
+output_dir: checkpoints/grpo-v10-qwen2.5-7b  # v10: fresh dir per run for clean provenance
+wandb_project: nfl-rlvr-calibration
+
+# Local smoke (validate the loop on CPU/MPS before paying for the pod):
+#   python -m train.grpo_train --config train/config.yaml --smoke
+smoke:
+  model: Qwen/Qwen2.5-0.5B-Instruct   # tiny non-thinking stand-in; no 4-bit, no vllm
+  max_steps: 3
+  num_generations: 2             # smoke: gen_batch (2) must be divisible by this
+  max_completion_length: 256

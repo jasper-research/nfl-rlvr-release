@@ -1,0 +1,99 @@
+% F1 -- hero schematic. Two rows from one game state: the naive choice (reward the realized
+% outcome, train the whole completion -> overconfident) and ours (reward the conditional rate,
+% train the answer span -> calibrated). Inline TikZ so fonts match the body.
+\begin{figure*}[t]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  >={Stealth[length=2mm]},
+  font=\small,
+  rowlbl/.style={anchor=west, font=\bfseries\small},
+  sub/.style={anchor=north west, font=\scriptsize\itshape, align=left, text width=30mm},
+  reason/.style={rounded corners=2pt, draw=ink!65, fill=ink!4, align=center,
+    text width=23mm, minimum height=10mm, inner sep=2pt, font=\footnotesize},
+  ans/.style={rounded corners=2pt, draw=ink!65, align=center,
+    text width=16mm, minimum height=10mm, inner sep=2pt, font=\footnotesize\bfseries},
+  inp/.style={rounded corners=2pt, draw=ink!65, fill=ink!7, align=center,
+    text width=20mm, minimum height=12mm, inner sep=3pt, font=\footnotesize},
+  tgt/.style={rounded corners=2pt, align=center, text width=27mm,
+    minimum height=8mm, inner sep=2pt, font=\footnotesize},
+  flow/.style={->, semithick, ink!75},
+]
+
+% ---------- shared input ----------
+\node[inp] (S) at (2.6,0) {Game state $x$\\\scriptsize score, time, spread};
+
+% =========================================================== TOP ROW: naive
+\def\ty{2.05}
+\node[rowlbl, text=cool] at (-0.2,\ty+0.82) {Naive};
+\node[sub, text=cool!80!black] at (-0.2,\ty+0.52) {reward the outcome,\\train the whole\\completion};
+
+\node[reason] (TR) at (5.7,\ty) {chain of thought};
+\node[ans, draw=cool!70, fill=cool!14] (TA) at (7.95,\ty) {P\,=\,88\%};
+\begin{scope}[on background layer]
+  \node[rounded corners=3pt, draw=cool!55, fill=cool!5, fit=(TR)(TA), inner sep=2.5pt] (TC) {};
+\end{scope}
+\draw[flow] (S) to[out=70,in=180] (TR.west);
+
+% reward target above
+\node[tgt, draw=cool!60, fill=cool!8] (TT) at (7.6,\ty+1.95)
+  {single outcome $y\in\{0,1\}$\\\scriptsize one noisy Bernoulli draw};
+\draw[flow, cool!85] (TA.north) -- node[right, font=\scriptsize, pos=0.45] {$r=1-(p-y)^2$} (TT.south);
+
+% gradient brace below the whole completion
+\draw[decorate, decoration={brace, amplitude=4pt, mirror}, cool!85, semithick]
+  (TC.south west) -- (TC.south east);
+\node[font=\scriptsize, text=cool!80!black, align=center, text width=42mm]
+  at (6.85,\ty-1.25) {policy gradient over the whole completion\\\textit{reasoning is corrupted}};
+
+% reliability glyph (overconfident: clearly flatter than the diagonal)
+\begin{scope}[shift={(10.85,\ty-0.67)}, scale=1.35]
+  \draw[gridc, thin] (0,0) rectangle (1,1);
+  \draw[dashed, ink!45, line width=0.4pt] (0,0) -- (1,1);
+  \draw[cool, semithick] (0.08,0.34) -- (0.92,0.66);
+  \foreach \x/\y in {0.18/0.38,0.4/0.46,0.6/0.54,0.82/0.628} \fill[cool] (\x,\y) circle (0.032);
+\end{scope}
+\node[font=\scriptsize, text=cool!80!black, align=center] at (11.55,\ty-0.95) {overconfident};
+
+% =========================================================== BOTTOM ROW: ours
+\def\by{-2.05}
+\node[rowlbl, text=accent] at (-0.2,\by+0.82) {Ours};
+\node[sub, text=accent!82!black] at (-0.2,\by+0.52) {reward the rate,\\train the answer span};
+
+\node[reason] (BR) at (5.7,\by) {chain of thought};
+\node[ans, draw=accent!75, fill=accent!12] (BA) at (7.95,\by) {P\,=\,61\%};
+\begin{scope}[on background layer]
+  \node[rounded corners=3pt, draw=ink!30, fill=ink!2, fit=(BR)(BA), inner sep=2.5pt] (BC) {};
+\end{scope}
+\draw[flow] (S) to[out=-70,in=180] (BR.west);
+
+% reward target below
+\node[tgt, draw=accent!70, fill=accent!7] (BT) at (7.6,\by-1.95)
+  {empirical rate $\hat p(x)$\\\scriptsize win rate over similar states};
+\draw[flow, accent!85] (BA.south) -- node[right, font=\scriptsize, pos=0.45] {$r=1-(p-\hat p)^2$} (BT.north);
+
+% gradient brace above the answer span only (mirror of the top row)
+\draw[decorate, decoration={brace, amplitude=4pt}, accent!85, semithick]
+  (BA.north west) -- (BA.north east);
+\node[font=\scriptsize, text=accent!82!black, align=center, text width=44mm]
+  at (7.95,\by+1.2) {gradient on the answer span only\\\textit{reasoning is preserved}};
+
+% reliability glyph (calibrated: on the diagonal)
+\begin{scope}[shift={(10.85,\by-0.67)}, scale=1.35]
+  \draw[gridc, thin] (0,0) rectangle (1,1);
+  \draw[dashed, ink!45, line width=0.4pt] (0,0) -- (1,1);
+  \draw[accent, semithick] (0.06,0.06) -- (0.94,0.94);
+  \foreach \x in {0.18,0.4,0.6,0.82} \fill[accent] (\x,\x) circle (0.032);
+\end{scope}
+\node[font=\scriptsize, text=accent!82!black, align=center] at (11.55,\by-0.95)
+  {calibrated to\\the market};
+
+\end{tikzpicture}%
+}
+\caption{The same game state, two ways to train a 7B model against outcomes. Rewarding the single
+realized outcome and updating the whole completion drives the chain of thought to extreme, overconfident
+numbers. Rewarding a state-conditioned empirical win rate $\hat p(x)$ and confining the gradient to the
+answer span leaves the reasoning intact and calibrates the forecaster to the betting market, using no
+human labels and no supervised fine-tuning.}
+\label{fig:principle}
+\end{figure*}

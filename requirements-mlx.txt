@@ -1,0 +1,5 @@
+# Local zero-shot preflight on Apple Silicon (M5). Installed separately from the CPU
+# data/reward stack so the data pipeline stays laptop-installable without MLX.
+mlx>=0.20
+mlx-lm>=0.20
+transformers>=4.44

@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.venv-train/
+.pytest_cache/
+.DS_Store
+
+# Secrets
+.env
+
+# Data and model artifacts (released via the Zenodo archive; rebuild locally with data/ scripts)
+data/raw/
+data/qa/
+data/grpo/
+*.parquet
+checkpoints/
+adapters/
+eval/results/
+eval/cache/
+outputs/
+wandb/
+ws1_logs/
+ws2_logs/
+*_results.txt
+
+# LaTeX build aux
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz

@@ -1,0 +1,253 @@
+{
+  "_note": "per-step in-training calibration eval (fixed n=128, greedy), parsed from GRPO train-log [eval @ N] lines. vegas_brier=0.1451 on the same 128.",
+  "runs": {
+    "direct_lead": {
+      "50": {
+        "format_success": 1.0,
+        "brier": 0.158,
+        "ece": 0.0995,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.515,
+        "reliability": 0.0186,
+        "resolution": 0.1092,
+        "uncertainty": 0.249,
+        "brier_check": 0.1585
+      },
+      "100": {
+        "format_success": 1.0,
+        "brier": 0.1467,
+        "ece": 0.0727,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.5131,
+        "reliability": 0.0117,
+        "resolution": 0.1136,
+        "uncertainty": 0.249,
+        "brier_check": 0.1471
+      },
+      "150": {
+        "format_success": 1.0,
+        "brier": 0.1442,
+        "ece": 0.0923,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.5247,
+        "reliability": 0.0154,
+        "resolution": 0.12,
+        "uncertainty": 0.249,
+        "brier_check": 0.1444
+      },
+      "200": {
+        "format_success": 1.0,
+        "brier": 0.1447,
+        "ece": 0.0975,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.5117,
+        "reliability": 0.0181,
+        "resolution": 0.1184,
+        "uncertainty": 0.249,
+        "brier_check": 0.1487
+      },
+      "250": {
+        "format_success": 1.0,
+        "brier": 0.1469,
+        "ece": 0.1089,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.507,
+        "reliability": 0.0227,
+        "resolution": 0.1218,
+        "uncertainty": 0.249,
+        "brier_check": 0.1499
+      }
+    },
+    "masked_lead": {
+      "50": {
+        "format_success": 1.0,
+        "brier": 0.147,
+        "ece": 0.0906,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.4802,
+        "reliability": 0.0127,
+        "resolution": 0.1156,
+        "uncertainty": 0.249,
+        "brier_check": 0.1461
+      },
+      "100": {
+        "format_success": 1.0,
+        "brier": 0.1605,
+        "ece": 0.1002,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.4498,
+        "reliability": 0.0165,
+        "resolution": 0.1055,
+        "uncertainty": 0.249,
+        "brier_check": 0.16
+      },
+      "150": {
+        "format_success": 1.0,
+        "brier": 0.1552,
+        "ece": 0.0855,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.481,
+        "reliability": 0.0162,
+        "resolution": 0.1076,
+        "uncertainty": 0.249,
+        "brier_check": 0.1577
+      },
+      "200": {
+        "format_success": 1.0,
+        "brier": 0.1516,
+        "ece": 0.0809,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.4951,
+        "reliability": 0.0113,
+        "resolution": 0.1045,
+        "uncertainty": 0.249,
+        "brier_check": 0.1558
+      },
+      "250": {
+        "format_success": 1.0,
+        "brier": 0.1508,
+        "ece": 0.0858,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.4777,
+        "reliability": 0.0171,
+        "resolution": 0.1121,
+        "uncertainty": 0.249,
+        "brier_check": 0.1541
+      }
+    },
+    "direct_lr1e5": {
+      "50": {
+        "format_success": 1.0,
+        "brier": 0.1703,
+        "ece": 0.0981,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.4809,
+        "reliability": 0.0115,
+        "resolution": 0.088,
+        "uncertainty": 0.249,
+        "brier_check": 0.1726
+      },
+      "100": {
+        "format_success": 1.0,
+        "brier": 0.1579,
+        "ece": 0.07,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.5169,
+        "reliability": 0.0073,
+        "resolution": 0.0998,
+        "uncertainty": 0.249,
+        "brier_check": 0.1564
+      },
+      "150": {
+        "format_success": 1.0,
+        "brier": 0.1559,
+        "ece": 0.0927,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.4899,
+        "reliability": 0.0156,
+        "resolution": 0.1081,
+        "uncertainty": 0.249,
+        "brier_check": 0.1566
+      }
+    },
+    "masked_lr4e5": {
+      "50": {
+        "format_success": 1.0,
+        "brier": 0.1575,
+        "ece": 0.1016,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.4984,
+        "reliability": 0.0184,
+        "resolution": 0.1107,
+        "uncertainty": 0.249,
+        "brier_check": 0.1567
+      },
+      "100": {
+        "format_success": 1.0,
+        "brier": 0.1722,
+        "ece": 0.076,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.5152,
+        "reliability": 0.0129,
+        "resolution": 0.0878,
+        "uncertainty": 0.249,
+        "brier_check": 0.1742
+      },
+      "150": {
+        "format_success": 1.0,
+        "brier": 0.1795,
+        "ece": 0.0577,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.5336,
+        "reliability": 0.0074,
+        "resolution": 0.075,
+        "uncertainty": 0.249,
+        "brier_check": 0.1814
+      },
+      "200": {
+        "format_success": 1.0,
+        "brier": 0.1961,
+        "ece": 0.1534,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.5394,
+        "reliability": 0.0368,
+        "resolution": 0.088,
+        "uncertainty": 0.249,
+        "brier_check": 0.1979
+      },
+      "250": {
+        "format_success": 1.0,
+        "brier": 0.2178,
+        "ece": 0.1352,
+        "vegas_brier": 0.1451,
+        "mean_predicted_prob": 0.557,
+        "reliability": 0.0388,
+        "resolution": 0.0726,
+        "uncertainty": 0.249,
+        "brier_check": 0.2153
+      }
+    }
+  },
+  "runs_from_ledger": {
+    "_source": "notes/experiments.md (v6-v9 not captured to local logs; W&B has full history)",
+    "v9_cot_phat": {
+      "50": {
+        "ece": 0.27
+      },
+      "100": {
+        "ece": 0.31,
+        "resolution": 0.02
+      }
+    },
+    "v6_cot_outcome": {
+      "50": {
+        "ece": 0.19
+      },
+      "150": {
+        "ece": 0.3
+      }
+    },
+    "v10_direct_phat": {
+      "50": {
+        "brier": 0.1847,
+        "ece": 0.0607
+      },
+      "100": {
+        "brier": 0.1635,
+        "ece": 0.0516
+      },
+      "150": {
+        "brier": 0.1719,
+        "ece": 0.0872
+      },
+      "200": {
+        "brier": 0.1647,
+        "ece": 0.0904
+      },
+      "250": {
+        "brier": 0.1597,
+        "ece": 0.0848
+      }
+    }
+  }
+}

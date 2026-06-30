@@ -1,0 +1,42 @@
+% Section 4.1 -- Conditional-rate reward (hero). Plain, direct, number-backed prose (RAG Results
+% register). No clefts/padding, no editorial teasers.
+\subsection{Conditional-rate reward}
+\label{sec:reward}
+
+The ideal reward would score each forecast against the true rate $\eta(x)$, but $\eta(x)$ is never
+observed. The only label for a play is its realized outcome $y$, a single draw from that rate. A reward
+built on the draw, $r=1-(p-y)^2$, is unbiased but noisy, since two identical favorites, one that wins
+and one that loses, produce equal and opposite gradients. The noise does not average out with more plays
+at a fixed state, because it is intrinsic to a binary label, and in the small groups that GRPO compares
+\citep{grpo} it overwhelms the per-state signal.
+
+We score each forecast against an estimate of the rate instead. We bin the training plays by score
+margin, time remaining, and pregame point spread, and set each bin to the fraction of its plays the
+possession team won. Bins with few plays are shrunk toward the overall rate by an empirical-Bayes prior,
+so a sparse bin is not governed by its few plays \citep{efron_morris1975}. The estimate
+$\hat p(x)$ uses only realized outcomes and the public pregame line, never the live market probability,
+which we hold out for evaluation. The reward is
+\begin{equation}
+  r \;=\; 1 - \bigl(p - \hat p(x)\bigr)^2 .
+  \label{eq:reward}
+\end{equation}
+The target uses no human labels. It comes from the same outcomes a binary reward would use, averaged
+over states to yield a low-variance estimate of $\eta(x)$. On held-out 2024 games it scores a Brier of
+$0.143$, close to the market's $0.136$, and it supplies a dense reward at every state. We call $\hat p$
+the teacher, because a model trained on \cref{eq:reward} can be no better calibrated than $\hat p$
+itself.
+
+An ablation under identical training isolates the target as the cause (\cref{tab:reward}). Rewarding the
+realized outcome reaches a Brier of $0.166$, but its calibration error drifts to $0.10$ as the policy
+fits individual outcomes. An equal blend of outcome and rate is worse on both, $0.181$ and $0.121$,
+because it reintroduces the outcome's noise. The rate alone is best on both, at $0.154$ and $0.050$.
+
+\begin{table}[t]
+\centering
+\input{tables/T2_reward.tex}
+\caption{Reward-target ablation under identical training (direct prediction, \cref{sec:decoupling};
+in-training held-out, $n=128$). The realized-outcome reward is higher-variance and its calibration
+drifts; blending the outcome back in is worse on both axes; the conditional rate $\hat p$ is the most
+accurate and the most stable.}
+\label{tab:reward}
+\end{table}
