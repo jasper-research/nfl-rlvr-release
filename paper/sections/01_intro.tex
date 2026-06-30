@@ -38,12 +38,12 @@ and evaluate on held-out seasons against the betting market, a frontier model, a
 table.
 
 Trained by direct prediction, the model matches the market's calibration on held-out games, at an
-expected calibration error of $0.029$ against the market's $0.027$, and it is better calibrated than a
-zero-shot frontier model, with no human labels and no access to the market. On the Brier score it
+expected calibration error (ECE) of $0.029$ against the market's $0.027$, and it is better calibrated
+than a zero-shot frontier model, with no human labels and no access to the market. On the Brier score it
 matches that frontier model and a tabular estimator, the limit that the public game state allows; the
 market's small remaining edge is the live in-game information none of them can see. Masking
 the gradient instead of discarding the reasoning keeps the chain of thought faithful, lowering the rate
-at which the stated probability does not follow from it from $22\%$ to $4\%$, at a small cost in
+at which the stated probability does not follow from it from $22.4\%$ to $4.4\%$, at a small cost in
 sharpness.
 
 \paragraph{Contributions.}

@@ -4,12 +4,12 @@
 \label{sec:results}
 
 Reinforcement learning against the conditional-rate reward calibrates the forecaster to the level of
-the betting market. On the held-out 2024 season the direct model reaches an expected calibration error of
-$0.029$, against the market's $0.027$ and the untrained model's $0.057$. Its maximum-bin error, $0.060$,
-is below the market's $0.082$, and its reliability curve lies on the diagonal where the untrained model's
-does not (\cref{fig:reliability}). Its Brier score of $0.144$ improves on the untrained $0.206$ and trails
-the market's $0.136$ (\cref{tab:main}). The masked chain-of-thought model is as well calibrated, at an
-expected calibration error of $0.030$, with a slightly higher Brier score of $0.152$.
+the betting market. On the held-out 2024 season the direct model reaches an ECE of
+$0.029$, against the market's $0.027$ and the untrained model's $0.057$. Its maximum calibration error,
+$0.060$, is below the market's $0.082$, and its reliability curve lies on the diagonal where the
+untrained model's does not (\cref{fig:reliability}). Its Brier score of $0.144$ improves on the untrained
+$0.206$ and trails the market's $0.136$ (\cref{tab:main}). The masked chain-of-thought model is as well
+calibrated, at an ECE of $0.030$, with a slightly higher Brier score of $0.152$.
 
 \begin{table*}[t]
 \centering
@@ -66,7 +66,7 @@ direct model reaches its level.}
 \end{table}
 
 On the test season the direct model is better calibrated than the teacher it was trained on. Its
-expected calibration error is $0.029$ against the teacher's $0.044$, and its maximum-bin error $0.060$
+ECE is $0.029$ against the teacher's $0.044$, and its maximum calibration error $0.060$
 against $0.099$, at the same Brier score. The policy smooths the bucketed target into a calibrated
 function of the state.
 
