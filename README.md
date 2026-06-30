@@ -5,7 +5,7 @@ label-free reward, to produce calibrated NFL in-game win-probability forecasts a
 betting market. No human labels and no supervised fine-tuning.
 
 - **Paper:** [`paper/main.pdf`](paper/main.pdf) (LaTeX source under `paper/`).
-- **Data and trained adapters:** archived on Zenodo, DOI `10.5281/zenodo.XXXXXXX` (see
+- **Data and trained adapters:** archived on Zenodo, DOI `10.5281/zenodo.21082572` (see
   [Data and models](#data-and-models)).
 
 > Authorship withheld during anonymous review.
@@ -97,7 +97,7 @@ test 2024.
 ## Data and models
 
 The prepared dataset and the trained LoRA adapters are archived on Zenodo (DOI
-`10.5281/zenodo.XXXXXXX`). The archive contains the GRPO prompts with outcomes and the `p̂` target,
+`10.5281/zenodo.21082572`). The archive contains the GRPO prompts with outcomes and the `p̂` target,
 the win-rate bucket table, the held-out game-state features, the per-play predictions for every
 model, and the direct and masked LoRA adapters for Qwen2.5-7B-Instruct. See `DATA.md` for the schema
 and provenance. Game data is derived from the public [nflverse](https://github.com/nflverse) play-by-play
@@ -111,4 +111,4 @@ Qwen2.5-7B-Instruct and inherit the Apache-2.0 license of that base model.
 
 ## Citation
 
-See `CITATION.cff`. (Author and DOI fields are filled at de-anonymization.)
+See `CITATION.cff`. (Author fields are completed at de-anonymization.)

@@ -5,8 +5,8 @@ title: "Verifiable Rewards for Calibrated Probabilistic Forecasting"
 authors:
   - name: "Anonymous"
 year: 2026
-# doi: 10.5281/zenodo.XXXXXXX   # data + adapters archive (fill once minted)
-# url: https://github.com/<org>/<repo>
+doi: 10.5281/zenodo.21082572
+url: https://github.com/jasper-research/nfl-rlvr-release
 preferred-citation:
   type: article
   title: "Verifiable Rewards for Calibrated Probabilistic Forecasting"

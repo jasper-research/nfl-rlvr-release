@@ -1,6 +1,6 @@
 # Data and models
 
-The prepared dataset and trained adapters are archived on Zenodo, DOI `10.5281/zenodo.XXXXXXX`. This
+The prepared dataset and trained adapters are archived on Zenodo, DOI `10.5281/zenodo.21082572`. This
 file summarizes the contents; the archive's own `README` carries the full schema.
 
 ## What is where
